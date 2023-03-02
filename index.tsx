@@ -33,14 +33,20 @@ const HashConnectContext = React.createContext<HashConnectContent>({
     disconnect: () => { }
 });
 
+export interface IHashconnectProviderProps {
+    metaData: HashConnectTypes.AppMetadata,
+    network: "testnet" | "mainnet",
+    children: React.ReactNode
+}
+
 const hashconnect = new HashConnect(false);
 
-export default function HashConnectProvider({ children, metaData = {
+export function HashConnectProvider({ children, metaData = {
     name: "dApp Example",
     description: "An example hedera dApp",
     icon: "https://www.hashpack.app/img/logo.svg",
     url: "http://localhost:3000"
-}, network = 'testnet' }: React.PropsWithChildren) {
+}, network = 'testnet' }: IHashconnectProviderProps) {
 
     const [hcData, setHcData] = React.useState<object>(hashconnect.hcData);
     const [topic, setTopic] = React.useState('');

@@ -1,7 +1,7 @@
 {
   "name": "hashconnect-provider",
   "description": "a react context for connecting to hashconnect easily",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "DaVinciGraph",
     "url": "https://davincigraph.io"
