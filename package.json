@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "hashconnect": "^0.2.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "hashconnect": "^0.2.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
