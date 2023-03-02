@@ -1,5 +1,5 @@
 .gitignore
 node_modules
-index.tsx
+/src
 package-lcok.json
 tsconfig.json

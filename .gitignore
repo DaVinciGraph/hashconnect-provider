@@ -1,6 +1,5 @@
 node_modules
 .npmignore
-index.d.ts
-index.js
+/dist
 package-lock.json
 tsconfig.json
