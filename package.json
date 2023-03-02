@@ -1,4 +1,26 @@
 {
+  "name": "hashconnect-provider",
+  "description": "a react context for connecting to hashconnect easily",
+  "version": "0.1.0",
+  "author": {
+    "name": "DaVinciGraph",
+    "url": "https://davincigraph.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DaVinciGraph/hashconnect-provider"
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "hashconnect.js",
+    "hashconnect.d.ts"
+  ],
+  "keywords": [
+    "Hashconnect",
+    "Hashpack",
+    "Hashgraph"
+  ],
   "devDependencies": {
     "typescript": "^4.9.5"
   },

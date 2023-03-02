@@ -1,6 +1,7 @@
 import * as React from "react";
-import { HashConnect, HashConnectTypes, MessageTypes } from "hashconnect";
-import { HashConnectConnectionState } from "hashconnect/dist/types";
+import { HashConnectConnectionState, HashConnectTypes } from "hashconnect/dist/types";
+import { HashConnect } from "hashconnect/dist/hashconnect";
+import { MessageTypes } from "hashconnect/dist/message";
 
 export type HashConnectContent = {
     hcData: object,
