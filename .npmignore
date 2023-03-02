@@ -1,5 +1,5 @@
 .gitignore
 node_modules
-hashconnect.tsx
+index.tsx
 package-lcok.json
 tsconfig.json
