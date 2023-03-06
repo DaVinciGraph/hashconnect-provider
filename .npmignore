@@ -1,5 +1,6 @@
 .gitignore
 node_modules
 /src
-package-lcok.json
+.gitignore
+package-lock.json
 tsconfig.json

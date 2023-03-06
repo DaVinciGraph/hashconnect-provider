@@ -1,6 +1,6 @@
 # Hashconnect-Provider
 
-This package provide a react context for connecting to hashconnect easily.
+This package provide a react context for connecting to HashConnect easily.
 
 ### **Install**
 
@@ -13,11 +13,12 @@ This package provide a react context for connecting to hashconnect easily.
 wrap your app in `HashConnectProvider`
 
 ```javascript
-import HashConnectProvider from 'hashconnect-provider'
+import { HashConnect } from "HashConnect/dist/HashConnect";
+import HashConnectProvider from 'HashConnect-provider'
 
 export default function App({ Component, pageProps }: AppProps) {
   return <>
-    <HashConnectProvider network="testnet" metaData={{
+    <HashConnectProvider hashConnect={new Hashconnect(true)} network="testnet" metaData={{
             name: "dApp Example",
             description: "An example hedera dApp",
             icon: "https://www.hashpack.app/img/logo.svg",
@@ -36,14 +37,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ```javascript
     const { 
-        hcData, // hashconnect data state
-        hashconnect, // hashconnect instance
+        hcData, // HashConnect data state
+        HashConnect, // HashConnect instance
         topic, //  topic state
         setTopic,
         pairingString, 
         pairingData,
         availableExtension,
-        state, // state of connection
+        state, // state of the connection
         connectToExtension,
         clearPairings,
         disconnect,

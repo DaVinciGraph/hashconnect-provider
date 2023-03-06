@@ -1,7 +1,7 @@
 {
   "name": "hashconnect-provider",
   "description": "a react context for connecting to hashconnect easily",
-  "version": "0.1.4",
+  "version": "0.2.2",
   "author": {
     "name": "DaVinciGraph",
     "url": "https://davincigraph.io"
@@ -13,8 +13,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "hashconnect.js",
-    "hashconnect.d.ts"
+    "dist"
   ],
   "keywords": [
     "Hashconnect",
@@ -22,12 +21,8 @@
     "Hashgraph"
   ],
   "devDependencies": {
+    "@types/react": "^18.0.28",
     "typescript": "^4.9.5"
-  },
-  "peerDependencies": {
-    "hashconnect": "^0.2.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
   },
   "dependencies": {
     "hashconnect": "^0.2.4",

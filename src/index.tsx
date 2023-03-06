@@ -12,43 +12,29 @@ export type HashConnectContent = {
     pairingData: HashConnectTypes.SavedPairingData | null,
     availableExtension: HashConnectTypes.WalletMetadata | null,
     state: HashConnectConnectionState,
-    hashconnect: HashConnect | null
+    hashConnect: HashConnect | null
     connectToExtension: Function,
     disconnect: Function,
     sendTransaction: Function
 }
 
-const HashConnectContext = React.createContext<HashConnectContent>({
-    hcData: {},
-    topic: '',
-    setTopic: () => { },
-    pairingString: "",
-    pairingData: null,
-    availableExtension: null,
-    hashconnect: null,
-    state: HashConnectConnectionState.Disconnected,
-    sendTransaction: () => { },
-    connectToExtension: () => { },
-    clearPairings: () => { },
-    disconnect: () => { }
-});
+const HashConnectContext = React.createContext<HashConnectContent>({} as HashConnectContent);
 
 export interface IHashconnectProviderProps {
-    metaData: HashConnectTypes.AppMetadata,
-    network: "testnet" | "mainnet",
+    hashConnect: HashConnect,
+    metaData?: HashConnectTypes.AppMetadata,
+    network?: "testnet" | "mainnet" | "previewnet",
     children: React.ReactNode
 }
 
-const hashconnect = new HashConnect(false);
-
-export function HashConnectProvider({ children, metaData = {
+export function HashConnectProvider({ children, hashConnect, metaData = {
     name: "dApp Example",
     description: "An example hedera dApp",
     icon: "https://www.hashpack.app/img/logo.svg",
     url: "http://localhost:3000"
 }, network = 'testnet' }: IHashconnectProviderProps) {
 
-    const [hcData, setHcData] = React.useState<object>(hashconnect.hcData);
+    const [hcData, setHcData] = React.useState<object>(hashConnect.hcData);
     const [topic, setTopic] = React.useState('');
     const [pairingString, setPairingString] = React.useState("");
     const [pairingData, setPairingData] = React.useState<HashConnectTypes.SavedPairingData | null>(null);
@@ -65,15 +51,15 @@ export function HashConnectProvider({ children, metaData = {
         init();
     }, []);
 
-    hashconnect.connectionStatusChangeEvent.on((data: any) => {
+    hashConnect.connectionStatusChangeEvent.on((data: any) => {
         setState(data);
-        setHcData(hashconnect.hcData);
+        setHcData(hashConnect.hcData);
     });
 
     const init = async () => {
         setUpHashConnectEvents();
 
-        let initData = await hashconnect.init(appMetadata, network, false);
+        let initData = await hashConnect.init(appMetadata, network, false);
 
         setTopic(initData.topic);
         setPairingString(initData.pairingString);
@@ -82,21 +68,21 @@ export function HashConnectProvider({ children, metaData = {
     }
 
     const setUpHashConnectEvents = () => {
-        hashconnect.foundExtensionEvent.on((data) => {
+        hashConnect.foundExtensionEvent.on((data) => {
             setAvailableExtension(data);
         })
 
-        hashconnect.pairingEvent.on((data) => {
+        hashConnect.pairingEvent.on((data) => {
             setPairingData(data.pairingData!);
         });
 
-        hashconnect.connectionStatusChangeEvent.on((state) => {
+        hashConnect.connectionStatusChangeEvent.on((state) => {
             setState(state);
         })
     }
 
     const connectToExtension = async () => {
-        hashconnect.connectToLocalWallet();
+        hashConnect.connectToLocalWallet();
     }
 
 
@@ -112,7 +98,7 @@ export function HashConnectProvider({ children, metaData = {
             }
         }
 
-        return await hashconnect.sendTransaction(topic, transaction)
+        return await hashConnect.sendTransaction(topic, transaction)
     }
 
     const requestAccountInfo = async () => {
@@ -122,22 +108,22 @@ export function HashConnectProvider({ children, metaData = {
             multiAccount: true
         }
 
-        await hashconnect.requestAdditionalAccounts(topic, request);
+        await hashConnect.requestAdditionalAccounts(topic, request);
     }
 
     const disconnect = () => {
-        hashconnect.disconnect(pairingData!.topic)
+        hashConnect.disconnect(pairingData!.topic)
         setPairingData(null);
     }
 
     const clearPairings = () => {
-        hashconnect.clearConnectionsAndData();
+        hashConnect.clearConnectionsAndData();
         setPairingData(null);
     }
 
     return <HashConnectContext.Provider value={{
         hcData,
-        hashconnect,
+        hashConnect,
         topic,
         setTopic,
         pairingString,
