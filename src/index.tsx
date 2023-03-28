@@ -2,11 +2,12 @@ import * as React from "react";
 import { HashConnectConnectionState, HashConnectTypes } from "hashconnect/dist/types";
 import { HashConnect } from "hashconnect";
 import { MessageTypes } from "hashconnect/dist/message";
+import { IHashConnect } from "hashconnect/dist/esm/types";
 
 export type HashConnectContent = {
-    hcData: object,
+    hcData: IHashConnect["hcData"],
     topic: string,
-    setTopic: Function,
+    setTopic: React.Dispatch<React.SetStateAction<string>>,
     clearPairings: Function,
     pairingString: string,
     pairingData: HashConnectTypes.SavedPairingData | null,
@@ -15,7 +16,7 @@ export type HashConnectContent = {
     hashConnect: HashConnect | null
     connectToExtension: Function,
     disconnect: Function,
-    sendTransaction: Function
+    sendTransaction: (trans: Uint8Array, acctToSign: string, return_trans: boolean, hideNfts: boolean) => Promise<MessageTypes.TransactionResponse>
 }
 
 const HashConnectContext = React.createContext<HashConnectContent>({} as HashConnectContent);
@@ -27,12 +28,7 @@ export interface IHashconnectProviderProps {
     children: React.ReactNode
 }
 
-export function HashConnectProvider({ children, hashConnect, metaData = {
-    name: "dApp Example",
-    description: "An example hedera dApp",
-    icon: "https://www.hashpack.app/img/logo.svg",
-    url: "http://localhost:3000"
-}, network = 'testnet' }: IHashconnectProviderProps) {
+export function HashConnectProvider({ children, hashConnect, metaData, network = 'testnet' }: IHashconnectProviderProps) {
 
     const [hcData, setHcData] = React.useState<object>(hashConnect.hcData);
     const [topic, setTopic] = React.useState('');
@@ -43,7 +39,7 @@ export function HashConnectProvider({ children, hashConnect, metaData = {
         description: "",
         icon: ""
     });
-    const appMetadata: HashConnectTypes.AppMetadata = metaData;
+    const appMetadata: HashConnectTypes.AppMetadata = metaData!;
 
     const [state, setState] = React.useState(HashConnectConnectionState.Disconnected);
 
@@ -134,7 +130,7 @@ export function HashConnectProvider({ children, hashConnect, metaData = {
         clearPairings,
         disconnect,
         sendTransaction
-    }}>
+    } as HashConnectContent}>
         {children}
     </HashConnectContext.Provider>
 }
