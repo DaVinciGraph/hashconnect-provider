@@ -4,6 +4,8 @@ import { HashConnect } from "hashconnect";
 import { MessageTypes } from "hashconnect/dist/message";
 import { IHashConnect } from "hashconnect/dist/esm/types";
 
+export type HederaNetworkType = 'testnet' | 'mainnet' | 'previewnet';
+
 export type HashConnectContent = {
     hcData: IHashConnect["hcData"],
     topic: string,
@@ -16,7 +18,9 @@ export type HashConnectContent = {
     hashConnect: HashConnect | null
     connectToExtension: Function,
     disconnect: Function,
-    sendTransaction: (trans: Uint8Array, acctToSign: string, return_trans: boolean, hideNfts: boolean) => Promise<MessageTypes.TransactionResponse>
+    sendTransaction: (trans: Uint8Array, acctToSign: string, return_trans: boolean, hideNfts: boolean) => Promise<MessageTypes.TransactionResponse>,
+    hederaNetwork: HederaNetworkType,
+    setHederaNetwork: React.Dispatch<React.SetStateAction<string>>
 }
 
 const HashConnectContext = React.createContext<HashConnectContent>({} as HashConnectContent);
@@ -24,7 +28,7 @@ const HashConnectContext = React.createContext<HashConnectContent>({} as HashCon
 export interface IHashconnectProviderProps {
     hashConnect: HashConnect,
     metaData?: HashConnectTypes.AppMetadata,
-    network?: "testnet" | "mainnet" | "previewnet",
+    network?: HederaNetworkType,
     children: React.ReactNode
 }
 
@@ -42,10 +46,16 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
     const appMetadata: HashConnectTypes.AppMetadata = metaData!;
 
     const [state, setState] = React.useState(HashConnectConnectionState.Disconnected);
+    const [hederaNetwork, setHederaNetwork] = React.useState(isValidNetwork(localStorage.getItem('hederaNetwork') as HederaNetworkType) ? localStorage.getItem('hederaNetwork') : network);
 
     React.useEffect(() => {
         init();
     }, []);
+
+    React.useEffect(() => {
+        if (isValidNetwork(hederaNetwork as HederaNetworkType))
+            localStorage.setItem('hederaNetwork', hederaNetwork!);
+    }, [hederaNetwork])
 
     hashConnect.connectionStatusChangeEvent.on((data: any) => {
         setState(data);
@@ -129,7 +139,9 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
         connectToExtension,
         clearPairings,
         disconnect,
-        sendTransaction
+        sendTransaction,
+        hederaNetwork,
+        setHederaNetwork
     } as HashConnectContent}>
         {children}
     </HashConnectContext.Provider>
@@ -137,4 +149,8 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
 
 export function useHashConnectContext() {
     return React.useContext(HashConnectContext);
+}
+
+const isValidNetwork = (network: HederaNetworkType): boolean => {
+    return network === 'testnet' || network === 'mainnet' || network === 'previewnet';
 }
