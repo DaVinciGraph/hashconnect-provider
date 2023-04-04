@@ -19,8 +19,8 @@ export type HashConnectContent = {
     connectToExtension: Function,
     disconnect: Function,
     sendTransaction: (trans: Uint8Array, acctToSign: string, return_trans: boolean, hideNfts: boolean) => Promise<MessageTypes.TransactionResponse>,
-    hederaNetwork: HederaNetworkType,
-    setHederaNetwork: React.Dispatch<React.SetStateAction<string>>
+    network: HederaNetworkType,
+    setNetwork: React.Dispatch<React.SetStateAction<string>>
 }
 
 const HashConnectContext = React.createContext<HashConnectContent>({} as HashConnectContent);
@@ -32,7 +32,7 @@ export interface IHashconnectProviderProps {
     children: React.ReactNode
 }
 
-export function HashConnectProvider({ children, hashConnect, metaData, network = 'testnet' }: IHashconnectProviderProps) {
+export function HashConnectProvider({ children, hashConnect, metaData, network: hederaNetwork = 'testnet' }: IHashconnectProviderProps) {
 
     const [hcData, setHcData] = React.useState<object>(hashConnect.hcData);
     const [topic, setTopic] = React.useState('');
@@ -46,18 +46,18 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
     const appMetadata: HashConnectTypes.AppMetadata = metaData!;
 
     const [state, setState] = React.useState(HashConnectConnectionState.Disconnected);
-    const [hederaNetwork, setHederaNetwork] = React.useState<HederaNetworkType>(isValidNetwork(localStorage.getItem('hederaNetwork') as HederaNetworkType) ? localStorage.getItem('hederaNetwork') as HederaNetworkType : network);
+    const [network, setNetwork] = React.useState<HederaNetworkType>(isLocalAvailable() && isValidNetwork(localStorage.getItem('hederaNetwork') as HederaNetworkType) ? localStorage.getItem('hederaNetwork') as HederaNetworkType : hederaNetwork);
 
     React.useEffect(() => {
         init();
     }, []);
 
     React.useEffect(() => {
-        if (isValidNetwork(hederaNetwork)) {
+        if (isValidNetwork(network) && isLocalAvailable()) {
             clearPairings()
-            localStorage.setItem('hederaNetwork', hederaNetwork!);
+            localStorage.setItem('hederaNetwork', network!);
         }
-    }, [hederaNetwork])
+    }, [network])
 
     hashConnect.connectionStatusChangeEvent.on((data: any) => {
         setState(data);
@@ -67,7 +67,7 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
     const init = async () => {
         setUpHashConnectEvents();
 
-        let initData = await hashConnect.init(appMetadata, hederaNetwork, false);
+        let initData = await hashConnect.init(appMetadata, network, false);
 
         setTopic(initData.topic);
         setPairingString(initData.pairingString);
@@ -112,7 +112,7 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
     const requestAccountInfo = async () => {
         let request: MessageTypes.AdditionalAccountRequest = {
             topic: topic,
-            network: hederaNetwork,
+            network: network,
             multiAccount: true
         }
 
@@ -142,8 +142,8 @@ export function HashConnectProvider({ children, hashConnect, metaData, network =
         clearPairings,
         disconnect,
         sendTransaction,
-        hederaNetwork,
-        setHederaNetwork
+        network,
+        setNetwork
     } as HashConnectContent}>
         {children}
     </HashConnectContext.Provider>
@@ -155,4 +155,8 @@ export function useHashConnectContext() {
 
 const isValidNetwork = (network: HederaNetworkType): boolean => {
     return network === 'testnet' || network === 'mainnet' || network === 'previewnet';
+}
+
+const isLocalAvailable = () => {
+    return typeof window !== 'undefined' && 'localStorage' in window;
 }
