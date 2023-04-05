@@ -32,8 +32,8 @@ export interface IHashconnectProviderProps {
     children: React.ReactNode
 }
 
-export function HashConnectProvider({ children, hashConnect, metaData, network: hederaNetwork = 'testnet' }: IHashconnectProviderProps) {
-
+export function HashConnectProvider({ children, hashConnect: hashConnectProp, metaData, network: hederaNetwork = 'testnet' }: IHashconnectProviderProps) {
+    const [hashConnect] = React.useState(hashConnectProp);
     const [hcData, setHcData] = React.useState<object>(hashConnect.hcData);
     const [topic, setTopic] = React.useState('');
     const [pairingString, setPairingString] = React.useState("");
