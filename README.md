@@ -13,7 +13,7 @@ This package provides a react context for connecting to HashConnect easily.
 wrap your app in `HashConnectContextProvider`
 
 ```javascript
-import { HashConnect } from "hashconnect";
+import { HashConnect } from "hashconnect/dist/hashconnect";
 import HashConnectContextProvider from 'hashconnect-provider'
 
 export default function App({ Component, pageProps }: AppProps) {
